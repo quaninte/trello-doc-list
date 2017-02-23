@@ -22,6 +22,9 @@
           "js": [
               "libs/jquery.js",
               "embed.js"
+          ],
+          "css": [
+              "text_list.css"
           ]
       }
   ],

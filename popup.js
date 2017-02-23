@@ -26,12 +26,25 @@ function buildColumnsList() {
 }
 
 $(function () {
+    // Enable vertical show
     chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
         console.log('Eend message to enable doc list');
         chrome.tabs.sendMessage(tabs[0].id, {action: 'enable-doc-list'}, function (response) {
             columns = response.columns;
 
             buildColumnsList();
+        });
+    });
+
+    // Bind get text list
+    $('.get-text-list').click(function() {
+        var type = $(this).data('type');
+        chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+            console.log('Eend message to enable text list');
+            chrome.tabs.sendMessage(tabs[0].id, {
+                action: 'show-text-list',
+                type: type
+            });
         });
     });
 });

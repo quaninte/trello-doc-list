@@ -87,6 +87,90 @@ function showColumns(columns) {
     });
 }
 
+function addTextListBlock() {
+    // Add text list block if not existed yet
+    var $textList = $('.text-list');
+    if ($textList.length == 0) {
+        $('body').append('<div class="text-list"><button class="close">Close</button><div class="content"></div></div>');
+
+        $('.text-list .close').click(function() {
+            $('.text-list').hide();
+        });
+    }
+    $textList.show();
+}
+
+function showTextList(type) {
+    addTextListBlock();
+
+    // Build cards list object
+    // Get assignees & insert into doc list
+    var assignees = [], i;
+    if (type == 'text') {
+        assignees.push('all');
+    } else {
+        // Get all assignees from visible tasks
+        $('.list-card:not(.hide) .member-avatar').each(function() {
+            // Insert if assignees not existed
+            var name = $(this).attr('title');
+            if (assignees.indexOf(name) == -1) {
+                assignees.push(name);
+            }
+        });
+    }
+
+    // Write assignees to doc list content
+    var $textListContent = $('.text-list .content');
+    $textListContent.html('');
+
+    var $assigneeContainer = $('<ol class="assignee"></ol>');
+    $textListContent.append($assigneeContainer);
+    for (i in assignees) {
+        $assigneeContainer.append('<li class="assignee-item" data-key="' + assignees[i] + '"><span>' + assignees[i] + '</span> <ol class="column"></ol></li>');
+    }
+
+    // Traverse visible columns
+    var $columns = $('.list-wrapper:visible');
+    $columns.each(function() {
+        var columnName = $('.list-header-name-assist', this).text(),
+            $column = $(this);
+
+        // Add column to assignee
+        var $columnUl = $('<li class="column-item" data-key="' + columnName + '"><span>' + columnName + '</span><ol class="card"></ol></li>');
+
+        console.log('Adding ' + columnName);
+        $('.assignee-item .column').append($columnUl);
+
+        // Traverse visible tasks
+        $('.list-card:not(.hide)', $column).each(function() {
+            // Get card name
+            var $card = $(this);
+            var $cardName = $('.list-card-title', $card).clone();
+
+            $('span', $cardName).remove();
+            var cardName = $cardName.text();
+
+            // Get all assignees of this card
+            var $assignees = $('.member img', $card), cardAssignees = [];
+
+            if (type == 'text') {
+                cardAssignees.push('all');
+            } else {
+                $assignees.each(function() {
+                    var assigneeName = $(this).attr('title');
+                    cardAssignees.push(assigneeName);
+                });
+            }
+
+            for (i in cardAssignees) {
+                // Add task to assignee and column
+                $('.card', '.assignee-item[data-key="' + cardAssignees[i] + '"] .column-item[data-key="' + columnName + '"]').append('<li>' + cardName + '</li>');
+            }
+
+        });
+    });
+}
+
 // Listen for actions
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
@@ -106,6 +190,10 @@ chrome.runtime.onMessage.addListener(
 
             case 'show-columns':
                 showColumns(request.columns);
+                break;
+
+            case 'show-text-list':
+                showTextList(request.type);
                 break;
 
             default:

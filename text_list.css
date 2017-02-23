@@ -1,0 +1,22 @@
+.text-list {
+    z-index: 9999999;
+    position: absolute;
+    border: 1px solid black;
+    background: white;
+    left: 10px;
+    top: 10px;
+    right: 10px;
+    bottom: 10px;
+    padding: 10px;
+}
+
+.text-list .close {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+.text-list .content ol {
+    list-style: decimal;
+    padding: 4px 0px 2px 15px;
+}
