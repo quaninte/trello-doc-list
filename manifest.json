@@ -1,7 +1,7 @@
 {
   "name": "Trello Doc List",
   "description": "Change trello board view to document list like view",
-  "version": "1.0",
+  "version": "1.0.1",
   "permissions": [
     "tabs", "*://trello.com/*"
   ],
