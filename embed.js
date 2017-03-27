@@ -66,7 +66,10 @@ function hideExtraSections() {
 function getColumnNames() {
     var names = [];
     $('.list-header-name-assist').each(function() {
-        names.push($(this).text());
+        names.push({
+            name: $(this).text(),
+            checked: $(this).parents('.list-wrapper').is(':visible')
+        });
     });
 
     return names;

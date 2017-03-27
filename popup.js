@@ -1,11 +1,19 @@
 var columns = [];
 
 function buildColumnsList() {
-    var columnsList = $('#columns-list'), i;
+    var columnsList = $('#columns-list'), i, checked;
 
     columnsList.html('');
     for (i in columns) {
-        columnsList.append('<li><label><input type="checkbox" name="col[]" checked="checked" value="' + columns[i] +'">' + columns[i] +'</label></li>');
+        // Checked?
+        if (columns[i].checked) {
+            checked = 'checked="checked"';
+        } else {
+            checked = '';
+        }
+
+        columnsList.append('<li><label><input type="checkbox" name="col[]" ' + checked + ' value="' + columns[i].name +'">'
+            + columns[i].name +'</label></li>');
     }
 
     // Bind checkbox change
@@ -28,7 +36,7 @@ function buildColumnsList() {
 $(function () {
     // Enable vertical show
     chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
-        console.log('Eend message to enable doc list');
+        console.log('Send message to enable doc list');
         chrome.tabs.sendMessage(tabs[0].id, {action: 'enable-doc-list'}, function (response) {
             columns = response.columns;
 
@@ -40,7 +48,7 @@ $(function () {
     $('.get-text-list').click(function() {
         var type = $(this).data('type');
         chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
-            console.log('Eend message to enable text list');
+            console.log('Send message to enable text list');
             chrome.tabs.sendMessage(tabs[0].id, {
                 action: 'show-text-list',
                 type: type
